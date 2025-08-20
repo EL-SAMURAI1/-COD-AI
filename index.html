@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مرحباً بك في أكاديمية الساموراي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(-45deg, #000, #111, #0a0a0a, #222);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .welcome-container {
+      animation: fadeIn 1.5s ease-in-out;
+      max-width: 600px;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      width: 110px;
+      height: 110px;
+      margin-bottom: 15px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px #0f0;
+      animation: pulse 2s infinite;
+    }
+
+    h1 {
+      font-size: 38px;
+      color: #0f0;
+      margin-bottom: 15px;
+      text-shadow: 0 0 15px #0f0;
+    }
+
+    p {
+      font-size: 18px;
+      color: #bbb;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 35px;
+      margin: 10px;
+      border-radius: 30px;
+      background: #0f0;
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 0 20px #0f0;
+      transition: 0.3s;
+      font-size: 18px;
+    }
+
+    .btn:hover {
+      background: #0c0;
+      color: #fff;
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 0 30px #0f0;
+    }
+
+    /* النجوم */
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0; left: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      display: block;
+      border-radius: 50%;
+      background: #0f0;
+      animation: twinkle 5s infinite ease-in-out;
+      opacity: 0.8;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #0f0; }
+      50% { box-shadow: 0 0 35px #0f0; }
+      100% { box-shadow: 0 0 10px #0f0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stars" id="stars"></div>
+
+  <div class="welcome-container">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h1> أهلاً بك في أكاديمية الساموراي 🥷🎓</h1>
+    <p>رحلتك نحو الاحتراف تبدأ من هنا. استعد لمستقبل مليء بالمعرفة والإبداع 🚀</p>
+    <a href="login.html" class="btn">🔑 تسجيل الدخول</a>
+  </div>
+
+  <script>
+    // توليد نجوم كثيرة بشكل عشوائي
+    const starsContainer = document.getElementById("stars");
+    const starsCount = 150; // عدد النجوم
+    for (let i = 0; i < starsCount; i++) {
+      const star = document.createElement("span");
+      star.classList.add("star");
+
+      // حجم النجمة
+      let size = Math.random() * 3 + 1; 
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+
+      // مكان النجمة
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.left = `${Math.random() * 100}%`;
+
+      // تأخير الحركة لكل نجمة عشان يبانوا عشوائيين
+      star.style.animationDelay = `${Math.random() * 5}s`;
+
+      starsContainer.appendChild(star);
+    }
+  </script>
+
+</body>
+</html>

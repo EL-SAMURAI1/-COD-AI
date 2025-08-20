@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EL Samurai - تسجيل الدخول</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(-45deg, #000, #111, #0a0a0a, #222);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .stars { position: absolute; width: 100%; height: 100%; top:0; left:0; z-index:0; overflow:hidden; }
+    .star { position:absolute; border-radius:50%; background:#0f0; opacity:0.8; animation: twinkle 5s infinite ease-in-out; }
+    @keyframes twinkle {
+      0%,100% { opacity:0.2; transform:scale(1);}
+      50% { opacity:1; transform:scale(1.4);}
+    }
+    .container {
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #0f0;
+      width: 90%; max-width: 400px;
+      text-align: center;
+      z-index: 1;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    h2 { color:#0f0; margin-bottom:20px; text-shadow:0 0 10px #0f0; }
+    input {
+      width: 90%; padding:12px; margin:10px 0;
+      border-radius:30px; border:2px solid #0f0;
+      background:transparent; color:#fff; font-size:15px; text-align:center;
+    }
+    button {
+      padding:12px 20px; margin:10px 0; width:95%;
+      border-radius:30px; border:none;
+      background:#0f0; color:#000; font-weight:bold; font-size:16px;
+      cursor:pointer; transition:0.3s; box-shadow:0 0 20px #0f0;
+    }
+    button:hover { background:#0c0; color:#fff; transform:scale(1.03); box-shadow:0 0 30px #0f0; }
+    p { margin-top:15px; color:#bbb; font-size:14px; }
+    a { color:#0f0; text-decoration:none; font-weight:bold; }
+    .forgot { margin-top: 10px; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(30px);} to{opacity:1; transform:translateY(0);} }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  <div class="container">
+    <h2>🔑 تسجيل الدخول</h2>
+    <input type="email" id="email" placeholder="البريد الإلكتروني">
+    <input type="password" id="password" placeholder="كلمة المرور">
+
+    <button id="loginBtn">تسجيل الدخول</button>
+    <p class="forgot"><a href="reset.html">نسيت كلمة المرور؟</a></p>
+    <p>ليس لديك حساب؟ <a href="signup.html">إنشاء حساب</a></p>
+    <p id="message"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFM3ByYmRcwWJG93gYGZij04Ec-U9pHU4",
+      authDomain: "el-samurai-courses.firebaseapp.com",
+      databaseURL: "https://el-samurai-courses-default-rtdb.firebaseio.com",
+      projectId: "el-samurai-courses",
+      storageBucket: "el-samurai-courses.firebasestorage.app",
+      messagingSenderId: "104544904748",
+      appId: "1:104544904748:web:e2cb1e0fd6af7d029f9389",
+      measurementId: "G-4QQX61PR9K"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const message = document.getElementById("message");
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(userCredential => {
+          message.style.color = "lime";
+          message.innerText = "✅ تم تسجيل الدخول بنجاح!";
+          setTimeout(() => {
+            window.location.href = "courses.html"; 
+          }, 1500);
+        })
+        .catch(error => {
+          message.style.color = "red";
+          message.innerText = "❌ " + error.message;
+        });
+    });
+  </script>
+
+  <script>
+    const starsContainer = document.getElementById("stars");
+    for (let i = 0; i < 150; i++) {
+      const star = document.createElement("span");
+      star.className = "star";
+      let size = Math.random() * 3 + 1;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.animationDuration = `${Math.random() * 5 + 3}s`;
+      starsContainer.appendChild(star);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EL Samurai - الكورسات</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: 'Tahoma', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #000;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header img {
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #0f0;
+      font-weight: bold;
+    }
+
+    h1 {
+      color: #0f0;
+      margin: 20px 0;
+    }
+
+    #filterBar {
+      margin: 15px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .filter-btn {
+      padding: 10px 18px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      background: #222;
+      color: #0f0;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #0f0;
+    }
+
+    .filter-btn.active {
+      background: #0f0;
+      color: #000;
+      box-shadow: 0 0 15px #0f0;
+    }
+
+    #searchInput {
+      margin: 15px auto;
+      padding: 10px 18px;
+      border-radius: 30px;
+      border: 2px solid #0f0;
+      background: transparent;
+      color: #fff;
+      width: 80%;
+      max-width: 400px;
+      display: block;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .course {
+      background: #222;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 700px;
+      box-shadow: 0 0 15px #0f0;
+      text-align: center;
+    }
+
+    .course h3 {
+      color: #0f0;
+    }
+
+    .course p {
+      color: #aaa;
+    }
+
+    iframe {
+      width: 100%;
+      height: 350px;
+      border: none;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="logo.png" alt="EL Samurai Logo"> <!-- هنا تحط لوجو موقعك -->
+    <nav>
+      <a href="chat.html">الدردشة</a>
+    </nav>
+  </header>
+
+  <h1>📚 كورسات EL Samurai</h1>
+
+  <!-- الفلاتر -->
+  <div id="filterBar">
+    <button class="filter-btn active" data-category="الكل">الكل</button>
+    <button class="filter-btn" data-category="برمجة">برمجة</button>
+    <button class="filter-btn" data-category="أمن سيبراني">أمن سيبراني</button>
+    <button class="filter-btn" data-category="شبكات">شبكات</button>
+  </div>
+
+  <!-- البحث -->
+  <input type="text" id="searchInput" placeholder="ابحث عن كورس...">
+
+  <!-- مكان عرض الكورسات -->
+  <div id="coursesList"></div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+    // إعداد Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFM3ByYmRcwWJG93gYGZij04Ec-U9pHU4",
+      authDomain: "el-samurai-courses.firebaseapp.com",
+      databaseURL: "https://el-samurai-courses-default-rtdb.firebaseio.com",
+      projectId: "el-samurai-courses",
+      storageBucket: "el-samurai-courses.firebasestorage.app",
+      messagingSenderId: "104544904748",
+      appId: "1:104544904748:web:e2cb1e0fd6af7d029f9389",
+      measurementId: "G-4QQX61PR9K"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const coursesList = document.getElementById("coursesList");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const searchInput = document.getElementById("searchInput");
+
+    let courses = [];
+
+    // 🔑 دالة ذكية لتحويل أي لينك يوتيوب إلى embed
+    function getEmbedUrl(url) {
+      try {
+        let videoId = "";
+
+        if (url.includes("youtu.be/")) {
+          videoId = url.split("youtu.be/")[1].split("?")[0];
+        } else if (url.includes("watch?v=")) {
+          videoId = url.split("watch?v=")[1].split("&")[0];
+        } else if (url.includes("embed/")) {
+          videoId = url.split("embed/")[1].split("?")[0];
+        }
+
+        return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0&iv_load_policy=3`;
+      } catch {
+        return url;
+      }
+    }
+
+    // جلب الكورسات من قاعدة البيانات
+    onChildAdded(ref(db, "courses"), (snapshot) => {
+      const data = snapshot.val();
+      data.id = snapshot.key;
+      courses.push(data);
+      renderCourses();
+    });
+
+    // عرض الكورسات (الجديد فوق)
+    function renderCourses(filter = "الكل", search = "") {
+      coursesList.innerHTML = "";
+
+      courses
+        .slice()       // نعمل نسخة
+        .reverse()     // نعكس الترتيب: الجديد فوق
+        .filter(course => (filter === "الكل" || course.category === filter))
+        .filter(course => course.title.includes(search) || course.desc.includes(search))
+        .forEach(course => {
+          const div = document.createElement("div");
+          div.className = "course";
+          div.innerHTML = `
+            <h3>${course.title}</h3>
+            <p>${course.desc || ""}</p>
+            <iframe src="${getEmbedUrl(course.video)}" allowfullscreen></iframe>
+          `;
+          coursesList.appendChild(div);
+        });
+    }
+
+    // فلترة الكورسات
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelector(".filter-btn.active").classList.remove("active");
+        btn.classList.add("active");
+        renderCourses(btn.dataset.category, searchInput.value);
+      });
+    });
+
+    // البحث
+    searchInput.addEventListener("input", () => {
+      const activeCategory = document.querySelector(".filter-btn.active").dataset.category;
+      renderCourses(activeCategory, searchInput.value);
+    });
+
+  </script>
+
+</body>
+</html>

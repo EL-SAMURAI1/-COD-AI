@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>EL Samurai - دردشة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap" rel="stylesheet">
+  <script type="module" src="chat.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .chat-box {
+      width: 400px;
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00ffcc44;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #00ffcc;
+    }
+    .messages {
+      height: 300px;
+      overflow-y: auto;
+      background: #111;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .msg {
+      padding: 5px;
+      margin: 5px 0;
+      background: #333;
+      border-radius: 6px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 6px;
+    }
+    input {
+      width: 70%;
+    }
+    button {
+      width: 25%;
+      background: #00ffcc;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #009977;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-box">
+    <h2>💬 دردشة EL Samurai</h2>
+    <div class="messages" id="messages"></div>
+    <div>
+      <input type="text" id="msgInput" placeholder="اكتب رسالتك...">
+      <button id="sendBtn">إرسال</button>
+    </div>
+  </div>
+</body>
+</html>
